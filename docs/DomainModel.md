@@ -1,110 +1,306 @@
-# ServiceFlow OS Domain Model
+# ServiceFlow Platform - Domain Model
+
+## Overview
+
+The ServiceFlow platform follows a multi-tenant SaaS architecture where each business operates independently while sharing the same application infrastructure.
+
+The domain model represents the core business entities and their relationships.
+
+---
+
+# Core Entities
 
 ## Tenant
 
-A tenant represents a company using the platform.
+Represents a business organization using ServiceFlow.
 
-Example:
+Attributes:
 
-ABC HVAC Services
+- tenant_id
+- business_name
+- email
+- phone
+- address
+- created_at
 
----
 
-## User
+Relationships:
 
-A system user.
+Tenant has many:
+- Users
+- Customers
+- Employees
+- Jobs
 
-Roles:
-
-* Admin
-* CSR
-* Dispatcher
-* Technician
-* Manager
-
----
-
-## Customer
-
-A customer receiving services.
-
-A customer can have:
-
-* Multiple Locations
-* Multiple Jobs
-* Multiple Invoices
 
 ---
 
-## Location
+# User
 
-Service address.
+Represents system users.
 
-Examples:
+Attributes:
 
-* Home
-* Office
-* Rental Property
+- user_id
+- tenant_id
+- first_name
+- last_name
+- email
+- password
+- role
 
----
 
-## Job
+Relationships:
 
-A service request.
+User belongs to:
+- One Tenant
 
-Examples:
-
-* AC Repair
-* Water Heater Installation
-* Electrical Inspection
-
----
-
-## Appointment
-
-Scheduled time slot for a job.
 
 ---
 
-## Employee
+# Customer
 
-Field technician or office employee.
+Represents customers who request services.
+
+Attributes:
+
+- customer_id
+- tenant_id
+- name
+- email
+- phone
+- status
+
+
+Relationships:
+
+Customer belongs to:
+- One Tenant
+
+Customer has many:
+- Locations
+- Jobs
+- Invoices
+
 
 ---
 
-## Estimate
+# Location
 
-Pricing proposal sent to customer.
+Represents customer service locations.
+
+Attributes:
+
+- location_id
+- customer_id
+- address
+- city
+- state
+- zipcode
+
+
+Relationships:
+
+Location belongs to:
+- One Customer
+
 
 ---
 
-## Invoice
+# Employee
 
-Bill generated after work completion.
+Represents service technicians and staff.
+
+Attributes:
+
+- employee_id
+- tenant_id
+- name
+- email
+- phone
+- role
+
+
+Relationships:
+
+Employee belongs to:
+- One Tenant
+
+Employee can have many:
+- Jobs
+
 
 ---
 
-## Payment
+# Job
 
-Money received for invoice.
+Represents a service request.
+
+Attributes:
+
+- job_id
+- tenant_id
+- customer_id
+- employee_id
+- status
+- scheduled_date
+- description
+
+
+Relationships:
+
+Job belongs to:
+- One Tenant
+- One Customer
+- One Employee
+
+
+Job has:
+
+- Appointment
+- Estimate
+- Invoice
+- Payment
+
 
 ---
 
-## Relationships
+# Appointment
+
+Represents scheduled service appointments.
+
+Attributes:
+
+- appointment_id
+- job_id
+- date
+- start_time
+- end_time
+- status
+
+
+Relationship:
+
+Appointment belongs to:
+- One Job
+
+
+---
+
+# Estimate
+
+Represents pricing before service completion.
+
+Attributes:
+
+- estimate_id
+- job_id
+- amount
+- status
+
+
+Relationship:
+
+Estimate belongs to:
+- One Job
+
+
+---
+
+# Invoice
+
+Represents customer billing.
+
+Attributes:
+
+- invoice_id
+- customer_id
+- job_id
+- amount
+- payment_status
+
+
+Relationships:
+
+Invoice belongs to:
+- Customer
+- Job
+
+
+---
+
+# Payment
+
+Represents completed financial transactions.
+
+Attributes:
+
+- payment_id
+- invoice_id
+- amount
+- payment_method
+- payment_date
+
+
+Relationship:
+
+Payment belongs to:
+- One Invoice
+
+
+---
+
+# Entity Relationship Summary
+
 
 Tenant
-├── Users
-├── Customers
-├── Employees
-└── Jobs
 
-Customer
-├── Locations
-├── Jobs
-└── Invoices
+|
+|-- Users
 
-Job
-├── Appointment
-├── Estimate
-├── Invoice
-└── Payment
+|
+|-- Customers
+
+|     |
+|     |-- Locations
+|     |
+|     |-- Jobs
+|            |
+|            |-- Appointment
+|            |-- Estimate
+|            |-- Invoice
+|                    |
+|                    |-- Payment
+
+
+Tenant
+
+|
+|-- Employees
+
+|
+|-- Jobs
+
+
+---
+
+# Design Principles
+
+## Multi-Tenancy
+
+Every business entity contains tenant_id to maintain complete data isolation between businesses.
+
+## Scalability
+
+The model supports future modules:
+
+- Dispatch management
+- Memberships
+- Notifications
+- AI automation
+- Reporting
+
+
+## Security
+
+Users can only access information belonging to their assigned tenant.
