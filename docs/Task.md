@@ -297,7 +297,17 @@ Assumption: 8 hours per day, 5 days per week, 40 hours per week, 320 total hours
 
 ### Checkpoint 2
 - Day 3: auth screens and API security.
+  - Build login and sign-up UI screens in the frontend with form validation and loading states.
+  - Implement the auth API contract for login, logout, and session refresh.
+  - Add Spring Security configuration for JWT or session-based auth.
+  - Protect backend routes and define role-based access control scaffolding for admin, CSR, dispatcher, technician, and manager.
+  - Add password hashing and basic error handling for invalid credentials.
 - Day 4: tenant isolation, migrations, seed admin user, basic audit trail.
+  - Add tenant-aware data model foundations such as tenant ID fields and tenant-scoped repository patterns.
+  - Create database migrations for users, roles, and tenant-related tables.
+  - Seed a default admin tenant and admin user for local development.
+  - Add a simple audit log table and capture key auth events such as login, user create, and role changes.
+  - Validate the auth flow end to end with smoke tests for login, access control, and tenant separation.
 
 ### Checkpoint 3
 - Day 5: customer CRUD and search.
@@ -400,3 +410,4 @@ If time gets tight, prioritize in this order:
 - Inventory and purchasing.
 - Payroll and commission tracking.
 - Deeper AI agent orchestration across booking, dispatch, billing, and retention.[cite:79][cite:99]
+gi
